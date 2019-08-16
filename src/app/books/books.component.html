@@ -1,0 +1,16 @@
+<h3>
+  Book Inventory
+</h3>
+<div>
+  <input placeholder="Search..." value="">
+</div>
+<mat-divider></mat-divider>
+<mat-list>
+  <mat-list-item *ngFor="let book of books">{{ book.Title }}
+    <button mat-icon-button [routerLink]="[ 'books/'+ book.id]"
+      aria-label="Details"
+      matTooltip="Details">
+      <mat-icon>info</mat-icon>
+    </button>
+  </mat-list-item>
+</mat-list>
