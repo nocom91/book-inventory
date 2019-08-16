@@ -21,6 +21,14 @@ selectBookState,
 fromBook.selectAllBooks
 );
 
+export const selectedBook = createSelector(
+    selectBookEntities,
+    selectBookState,
+    (books, state) => {
+        return books[state.selectedBookId];
+    }
+);
+
 export const selectSearchString = createSelector(selectBookState, fromBook.selectSearchString);
 
 export const getBooksForFiltering = createSelector(selectAllBooks, selectSearchString, (books, searchString) =>

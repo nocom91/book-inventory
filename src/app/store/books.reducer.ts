@@ -1,7 +1,7 @@
 import {createReducer, on, Action} from '@ngrx/store';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 
-import { setBooks, updateBook, setSearchString} from './books.actions';
+import { setBooks, updateBook, selectBook, setSearchString} from './books.actions';
 import { Book, IBook } from '../models/book.model';
 
 export interface State extends EntityState<IBook>{
@@ -31,6 +31,7 @@ const bookReducer = createReducer(
     initialState,
     on(setBooks, (state, {books}) => adapter.addAll(books, state)),
     on(updateBook, (state, { book }) => adapter.updateOne(book, state)),
+    on(selectBook, (state, { bookId }) => ({...state, selectedBookId: bookId})),
     on(setSearchString, (state, { searchString }) => ({...state, searchString: searchString}))
 );
 

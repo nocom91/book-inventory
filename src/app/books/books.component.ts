@@ -23,7 +23,10 @@ export class BooksComponent implements OnInit {
 
   public books: IBook[] = [];
 
-  constructor(private firebaseService: FirebaseService, private store: Store<IBook>) { 
+  constructor(
+    private firebaseService: FirebaseService,
+    private store: Store<IBook>
+  ) {
     this._searchSubject = new Subject<string>();
   }
 
