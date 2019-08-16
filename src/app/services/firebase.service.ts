@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book } from '../models/book.model';
+
+import { Store } from '@ngrx/store';
+import * as fromBooks from '../store/books.actions';
+
+import { Book, IBook } from '../models/book.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,10 +12,11 @@ import { Book } from '../models/book.model';
 export class FirebaseService {
 
   private host: string = 'https://book-inventory-acd5e.firebaseio.com/books.json';
-  constructor(private http: HttpClient) {  }
+  constructor(private http: HttpClient, private store: Store<IBook>) {  }
 
-  getBooks(){
-    return this.http.get<Book[]>(this.host);
+  getBooks() {
+   this.http.get<Book[]>(this.host)
+   .subscribe(response => this.store.dispatch(fromBooks.setBooks({books: response})));
   }
 
 }

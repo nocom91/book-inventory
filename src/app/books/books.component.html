@@ -1,10 +1,9 @@
-<h3>
-  Book Inventory
-</h3>
-<div>
-  <input placeholder="Search..." value="">
-</div>
-<mat-divider></mat-divider>
+<h3>Book Inventory</h3>
+<form>
+  <mat-form-field>
+    <input matInput placeholder="Search..." value="" name="searchInput" #searchInput [(ngModel)]="queryString" (keyup)="filter()">
+  </mat-form-field>
+</form>
 <mat-list>
   <mat-list-item *ngFor="let book of books">{{ book.Title }}
     <button mat-icon-button [routerLink]="[ 'books/'+ book.id]"

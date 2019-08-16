@@ -1,4 +1,4 @@
-export class Book {
+export interface IBook {
     id: number;
     Title: string;
     Publisher: string;
@@ -6,3 +6,13 @@ export class Book {
     Availability: number;
     Authors: string[];
 }
+
+export class Book implements IBook{
+    id: number;
+    Title: string;
+    Publisher: string;
+    Price: number;
+    Availability: number;
+    Authors: string[];
+}
+
