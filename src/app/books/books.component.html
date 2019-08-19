@@ -5,7 +5,9 @@
   </mat-form-field>
 </form>
 <mat-list>
-  <mat-list-item *ngFor="let book of books">{{ book.Title }}
+  <mat-list-item *ngFor="let book of books">
+    <div mat-line>{{ book.Title }}</div>
+    <div mat-line>{{ book.Availability }}</div>
     <button mat-icon-button [routerLink]="[ 'books/'+ book.id]"
       aria-label="Details"
       matTooltip="Details">
