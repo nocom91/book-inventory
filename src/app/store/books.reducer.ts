@@ -2,22 +2,22 @@ import {createReducer, on, Action} from '@ngrx/store';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 
 import { setBooks, updateBook, selectBook, setSearchString} from './books.actions';
-import { Book, IBook } from '../models/book.model';
+import { Book } from '../models/book.model';
 
-export interface State extends EntityState<IBook>{
+export interface State extends EntityState<Book>{
     selectedBookId: number;
     searchString: string;
 }
 
-export function selectBookId(a: IBook): string {
+export function selectBookId(a: Book): string {
     return a.id.toString();
 }
 
-export function sortByTitle(a: IBook, b: IBook): number {
+export function sortByTitle(a: Book, b: Book): number {
     return a.Title.localeCompare(b.Title);
 }
 
-export const adapter: EntityAdapter<IBook> = createEntityAdapter<IBook>({
+export const adapter: EntityAdapter<Book> = createEntityAdapter<Book>({
     selectId: selectBookId,
     sortComparer: sortByTitle
 });
