@@ -24,5 +24,6 @@ export class Book implements IBook{
     Authors: string[];
     Shipping: string;
     FieldToShow: string;
+    ValueToShow: any;
 }
 

@@ -44,13 +44,15 @@ export const getBooksForFiltering = createSelector(selectAllBooks, selectSearchS
                 const element = value[property];
                 if (!(element instanceof Array) && element.toString().toLowerCase().indexOf(searchString) > -1) {
                     temp_book.FieldToShow = property;
+                    temp_book.ValueToShow = element;
                     resultBooks.push(temp_book);
-                    continue;
-                } else if(element instanceof Array){
-                    if(element.some(author => author.toLowerCase().indexOf(searchString) > -1)){
+                    break;
+                } else if (element instanceof Array) {
+                    if (element.some(author => author.toLowerCase().indexOf(searchString) > -1)) {
                         temp_book.FieldToShow = property;
+                        temp_book.ValueToShow = element;
                         resultBooks.push(temp_book);
-                        continue;
+                        break;
                     }
                 }
             }
@@ -67,10 +69,10 @@ export const getBooksForFiltering = createSelector(selectAllBooks, selectSearchS
 );
 
 export const getShippingOptions = createSelector(selectAllBooks, (books) => {
-    return books.map(book=>book.Shipping).filter(onlyUnique);
+    return books.map(book => book.Shipping).filter(onlyUnique);
 });
 
 
 function onlyUnique(value, index, self){
-    return self.indexOf(value) === index;
+    return value && self.indexOf(value) === index;
 }
