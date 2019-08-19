@@ -1,3 +1,32 @@
-<p>
-  book-info works!
-</p>
+<mat-progress-spinner *ngIf="!isDataAvailable"></mat-progress-spinner>
+<form [formGroup]="bookForm" *ngIf="isDataAvailable">
+    {{ selectedBook.Title }}
+    Authors:
+    
+      <ul>
+        <li *ngFor="let author of selectedBook.Authors">{{ author }}</li>
+      </ul>
+    
+    Publisher:
+    
+    <div> {{ selectedBook.Publisher }}</div>
+
+    <div> {{ selectedBook.Price }}</div>
+    <div *ngIf="!isEditingMode else editorBlock">
+      <div> {{ selectedBook.Availability }}</div>
+      <div> {{ selectedBook.Shipping }}</div>      
+    </div>
+    <ng-template #editorBlock>
+            <mat-form-field>
+              <input matInput name="availability" formControlName="availabilityInput" type="number"/>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput type="text" [matAutocomplete]="shippingAutoComplete" [formControl]="shippingInput"/>
+              <mat-autocomplete #shippingAutoComplete="matAutocomplete">
+                <mat-option *ngFor="let opt of filteredShippingList | async" [value]="opt">{{ opt }}</mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+    </ng-template>
+      <button mat-raised-button color="primary" (click)="isEditingMode = !isEditingMode">Edit</button>
+      <button mat-raised-button color="accent" type="submit" (click)="onSubmit()">Save</button>
+</form>
