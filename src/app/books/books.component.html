@@ -6,8 +6,11 @@
 </form>
 <mat-list>
   <mat-list-item *ngFor="let book of books">
-    <div mat-line>{{ book.Title }}</div>
-    <div mat-line>{{ book.Availability }}</div>
+    <div mat-line><span>Title</span><span>{{ book.Title }}</span></div>
+    <div mat-line><span>Availability</span><span>{{ book.Availability }}</span></div>
+    <div mat-line *ngIf="book.ValueToShow && book.FieldToShow != 'Title' && book.FieldToShow != 'Availability'">
+        <span> {{ book.FieldToShow }}</span>
+      <span>{{ book.ValueToShow }}</span></div>
     <button mat-icon-button [routerLink]="[ 'books/'+ book.id]"
       aria-label="Details"
       matTooltip="Details">

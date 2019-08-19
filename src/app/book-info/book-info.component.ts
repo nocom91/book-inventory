@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 
@@ -21,10 +22,11 @@ import { Book, IBook, IBookBase } from '../models/book.model';
 export class BookInfoComponent implements OnInit, OnDestroy {
 
   private bookId: number;
-  
+
   public selectedBook: Book;
   public isEditingMode: boolean;
   public isDataAvailable: boolean;
+  public isSaveAvailable: boolean;
   public shippingList: string[];
   public filteredShippingList: Observable<string[]>;
 
@@ -33,48 +35,57 @@ export class BookInfoComponent implements OnInit, OnDestroy {
   public availabilityInput: FormControl;
 
   private _bookSubscription: Subscription;
-  private  _shippingOptionsSubscription: Subscription;
+  private _shippingOptionsSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private store: Store<IBook>,
-    private firebaseService: FirebaseService
-    ) { 
-      this.selectedBook = new Book();
-      this.isEditingMode = false;
-      this.isDataAvailable = false;
-      this.bookForm = new FormGroup({
-        availabilityInput: new FormControl(0)
-      });
-      this.shippingInput = new FormControl('');
-      this.bookForm.addControl('shippingInput', this.shippingInput);
-    }
+    private firebaseService: FirebaseService,
+    private _snackBar: MatSnackBar
+  ) {
+    this.selectedBook = new Book();
+    this.isEditingMode = false;
+    this.isSaveAvailable = false;
+    this.isDataAvailable = false;
+    this.bookForm = new FormGroup({
+      availabilityInput: new FormControl(0)
+    });
+    this.shippingInput = new FormControl('');
+    this.bookForm.addControl('shippingInput', this.shippingInput);
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.bookId = +params['id'];
-      this.store.dispatch(fromBooksAction.selectBook({bookId: this.bookId}));
+      this.store.dispatch(fromBooksAction.selectBook({ bookId: this.bookId }));
       this.store.select(fromBooks.selectedBook)
-      .subscribe(book => {
-        if (book) {
-          this.selectedBook = book;
-          this.isDataAvailable = true;
-          this.bookForm.setValue({
-            availabilityInput: this.selectedBook.Availability,
-            shippingInput: ''
-          });
-        }
-      });
-      this.store.select(fromBooks.getShippingOptions).subscribe(shippingOptions => this.shippingList = shippingOptions);      
+        .subscribe(book => {
+          if (book) {
+            this.selectedBook = book;
+            this.isDataAvailable = true;
+            this.bookForm.setValue({
+              availabilityInput: this.selectedBook.Availability,
+              shippingInput: this.selectedBook.Shipping
+            });
+          }
+        });
+      this.store.select(fromBooks.getShippingOptions).subscribe(shippingOptions => this.shippingList = shippingOptions);
     });
     this.filteredShippingList = this.shippingInput.valueChanges.pipe(
       startWith(''),
-      map(opt => opt ? this._filterShippingOptions(opt): this.shippingList.slice())
+      map(opt => opt ? this._filterShippingOptions(opt) : this.shippingList.slice())
     );
+    this.bookForm.valueChanges.subscribe(change => {
+      const { availabilityInput, shippingInput } = change;
+      if (availabilityInput !== this.selectedBook.Availability ||
+        shippingInput !== this.selectedBook.Shipping) {
+        this.isSaveAvailable = true;
+      }
+    });
   }
 
   onSubmit() {
-    let { availabilityInput, shippingInput } = this.bookForm.value;
+    const { availabilityInput, shippingInput } = this.bookForm.value;
     const data: IBookBase = {
       firebaseId: this.selectedBook.firebaseId,
       Availability: availabilityInput,
@@ -91,6 +102,7 @@ export class BookInfoComponent implements OnInit, OnDestroy {
             }
           }
         }));
+        this._showNotification();
       }
     });
   }
@@ -100,7 +112,11 @@ export class BookInfoComponent implements OnInit, OnDestroy {
     return this.shippingList.filter(item => item.toLowerCase().indexOf(filterValue) > -1);
   }
 
-  ngOnDestroy(){
+  private _showNotification() {
+    this._snackBar.open("Changes have been saved", "Ok")
+  }
+
+  ngOnDestroy() {
     if (this._bookSubscription) {
       this._bookSubscription.unsubscribe();
     }

@@ -10,14 +10,15 @@ import { StoreModule } from '@ngrx/store';
 import { reducer } from './store/books.reducer';
 
 import { 
-   MatInputModule, 
-   MatDividerModule, 
-   MatListModule, 
-   MatButtonModule, 
-   MatIconModule, 
+   MatInputModule,
+   MatDividerModule,
+   MatListModule,
+   MatButtonModule,
+   MatIconModule,
    MatTooltipModule,
    MatAutocompleteModule,
-   MatProgressSpinnerModule
+   MatProgressSpinnerModule,
+   MatSnackBarModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -52,6 +53,7 @@ import { BookInfoComponent } from './book-info/book-info.component';
       MatTooltipModule,
       MatAutocompleteModule,
       MatProgressSpinnerModule,
+      MatSnackBarModule,
       BrowserAnimationsModule
    ],
    providers: [
