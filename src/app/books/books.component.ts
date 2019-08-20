@@ -41,7 +41,7 @@ export class BooksComponent implements OnInit, OnDestroy {
     this._filterSubscription = this.searchStringControl
       .valueChanges
       .pipe(
-        debounceTime(300),
+        debounceTime(400),
         distinctUntilChanged()
       ).subscribe(data => {
         this.store.dispatch(fromBooksAction.setSearchString({

@@ -5,7 +5,7 @@
   </mat-form-field>
 </form>
 <cdk-virtual-scroll-viewport itemSize="20" class="viewport">
-  <div *ngFor="let book of books$ | async" [routerLink]="[ 'books/'+ book.id]" style="cursor: pointer" class="item">
+  <div *cdkVirtualFor="let book of books$ | async" [routerLink]="[ 'books/'+ book.id]" style="cursor: pointer" class="item">
     <div>
       <div><span class="title-list">{{ book.Title }}</span></div>
       <div>
