@@ -32,12 +32,12 @@ export const selectedBook = createSelector(
 
 export const selectSearchString = createSelector(selectBookState, fromBook.selectSearchString);
 
-export const getBooksForFiltering = createSelector(selectAllBooks, selectSearchString, (books, searchString) => {
+export const getFilteredBooks = createSelector(selectAllBooks, selectSearchString, (books, searchString) => {
     const resultBooks: Book[] = [];
-    const lowSearchString = searchString.toLowerCase();
-    if (!lowSearchString)
+    if (!searchString)
         return resultBooks;
-    books.forEach(value => {
+    const lowSearchString = searchString.toLowerCase();
+    for (const value of books) {
         const temp_book = value;
         for (const property in value) {
             if (value.hasOwnProperty(property)) {
@@ -57,7 +57,7 @@ export const getBooksForFiltering = createSelector(selectAllBooks, selectSearchS
                 }
             }
         }
-    });
+    }
     return resultBooks;
 });
 

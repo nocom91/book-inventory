@@ -1,27 +1,28 @@
 <h3>Book Inventory</h3>
 <form>
   <mat-form-field class="search-input-container">
-    <input matInput placeholder="Search..." value="" name="searchInput" #searchInput [(ngModel)]="queryString"
-      (keyup)="filter()">
+    <input matInput placeholder="Search..." name="searchInput" #searchInput [formControl]="searchStringControl">
   </mat-form-field>
 </form>
-<mat-list>
-  <mat-list-item *ngFor="let book of books" [routerLink]="[ 'books/'+ book.id]" style="cursor: pointer">
-    <div mat-line><span class="title-list">{{ book.Title }}</span></div>
-    <div mat-line>
-      <div class="availability-list">
-        <span class="property-label-list">Availability</span>
-        <span class="property-value-list">{{ book.Availability | plural}}</span>
+<cdk-virtual-scroll-viewport itemSize="20" class="viewport">
+  <div *ngFor="let book of books$ | async" [routerLink]="[ 'books/'+ book.id]" style="cursor: pointer" class="item">
+    <div>
+      <div><span class="title-list">{{ book.Title }}</span></div>
+      <div>
+        <div class="availability-list">
+          <span class="property-label-list">Availability</span>
+          <span class="property-value-list">{{ book.Availability | plural}}</span>
+        </div>
       </div>
-    </div>
-    <div mat-line *ngIf="book.ValueToShow && book.FieldToShow != 'Title' && book.FieldToShow != 'Availability'">
-      <div class="availability-list">
-        <span class="property-label-list"> {{ book.FieldToShow }}</span>
-        <span class="property-value-list">{{ book.ValueToShow }}</span>
+      <div *ngIf="book.ValueToShow && book.FieldToShow != 'Title' && book.FieldToShow != 'Availability'">
+        <div class="availability-list">
+          <span class="property-label-list"> {{ book.FieldToShow }}</span>
+          <span class="property-value-list">{{ book.ValueToShow }}</span>
+        </div>
       </div>
     </div>
     <button mat-icon-button aria-label="Details" matTooltip="Details">
       <mat-icon>info</mat-icon>
     </button>
-  </mat-list-item>
-</mat-list>
+  </div>
+</cdk-virtual-scroll-viewport>

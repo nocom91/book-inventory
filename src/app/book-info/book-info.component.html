@@ -1,8 +1,8 @@
-<mat-progress-spinner *ngIf="!isDataAvailable"></mat-progress-spinner>
-
 <button mat-icon-button type="button" [routerLink]="['/']">
   <mat-icon>keyboard_arrow_left</mat-icon>Back
 </button>
+
+<mat-spinner *ngIf="!isDataAvailable"></mat-spinner>
 
 <form [formGroup]="bookForm" *ngIf="isDataAvailable">
   <mat-card> 

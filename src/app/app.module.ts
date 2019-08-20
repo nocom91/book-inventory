@@ -12,7 +12,6 @@ import { reducer } from './store/books.reducer';
 import { 
    MatInputModule,
    MatDividerModule,
-   MatListModule,
    MatButtonModule,
    MatIconModule,
    MatTooltipModule,
@@ -21,6 +20,7 @@ import {
    MatSnackBarModule,
    MatCardModule
 } from '@angular/material';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -51,7 +51,7 @@ import { BookInfoComponent } from './book-info/book-info.component';
       StoreDevtoolsModule.instrument({maxAge: 15, logOnly: environment.production}),
       MatInputModule,
       MatDividerModule,
-      MatListModule,
+      ScrollingModule,
       MatButtonModule,
       MatIconModule,
       MatTooltipModule,
