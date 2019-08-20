@@ -1,0 +1,1 @@
+ng serve --aot=true --open=true --port=4300

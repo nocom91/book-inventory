@@ -113,7 +113,9 @@ export class BookInfoComponent implements OnInit, OnDestroy {
   }
 
   private _showNotification() {
-    this._snackBar.open("Changes have been saved", "Ok")
+    this._snackBar.open("Changes have been saved", "Ok", {
+      duration: 2000
+    });
   }
 
   ngOnDestroy() {
