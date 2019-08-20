@@ -55,14 +55,11 @@ app-book-info {
     margin-bottom: 15px;
     display: flex;
     flex-direction: row;
+    line-height: 1.5em;
 }
 
 .item-info {
-    flex-grow: 2;
-}
-
-.item-details {
-    flex-grow: 1;
+    flex: 1;
 }
 
 .viewport::-webkit-scrollbar {
