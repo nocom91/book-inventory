@@ -1,12 +1,12 @@
 <h3>Book Inventory</h3>
 <form>
   <mat-form-field class="search-input-container">
-    <input matInput placeholder="Search..." name="searchInput" #searchInput [formControl]="searchStringControl">
+    <input matInput placeholder="Search..." name="searchInput" [formControl]="searchStringControl">
   </mat-form-field>
 </form>
 <cdk-virtual-scroll-viewport itemSize="20" class="viewport">
   <div *cdkVirtualFor="let book of books$ | async" [routerLink]="[ 'books/'+ book.id]" style="cursor: pointer" class="item">
-    <div>
+    <div class="item-info">
       <div><span class="title-list">{{ book.Title }}</span></div>
       <div>
         <div class="availability-list">
@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-    <button mat-icon-button aria-label="Details" matTooltip="Details">
+    <button mat-icon-button aria-label="Details" matTooltip="Details" class="item-details">
       <mat-icon>info</mat-icon>
     </button>
   </div>

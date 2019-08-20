@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -7,6 +7,7 @@ import * as fromBooksAction from '../store/books.actions';
 
 import { Book } from '../models/book.model';
 import { FormControl } from '@angular/forms';
+import { filterBookArray } from '../web-worker/filter';
 
 @Component({
   selector: 'app-books',
@@ -14,16 +15,12 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./books.component.css']
 })
 export class BooksComponent implements OnInit, OnDestroy {
-
-  @ViewChild("searchInput", { static: true })
-  public searchInput: ElementRef;
-
   public searchStringControl: FormControl;
 
   public books$: Observable<Book[]>;
-  private _books: Book[];
   private _filterSubscription: Subscription;
   private _filterStringSubscription: Subscription;
+  private _allBooksSubscription: Subscription;
 
   private _filterWebWorker: Worker;
   constructor(
@@ -34,7 +31,6 @@ export class BooksComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.store.select(fromBooks.selectAllBooks).subscribe(b => this._books = b);
     this._filterStringSubscription = this.store.select(fromBooks.selectSearchString)
       .subscribe(str => {
         if (!this.searchStringControl.value) {
@@ -55,26 +51,34 @@ export class BooksComponent implements OnInit, OnDestroy {
       });
   }
 
+
+  startWebWorker(searchInput: string) {
+    this._allBooksSubscription = this.store.select(fromBooks.selectAllBooks)
+      .subscribe(books => {
+        const data = {
+          books: books,
+          searchString: searchInput
+        }
+        if (typeof Worker !== 'undefined') {
+          if (!this._filterWebWorker) {
+            this._filterWebWorker = new Worker('../web-worker/filter-worker.worker', { type: 'module' });
+          }
+          this._filterWebWorker.onmessage = ({ data }) => {
+            this.books$ = of(data);
+          };
+
+          this._filterWebWorker.postMessage(data);
+        } else {
+          filterBookArray(data);
+        }
+      });
+  }
   ngOnDestroy() {
     if (this._filterSubscription)
       this._filterSubscription.unsubscribe();
     if (this._filterStringSubscription)
       this._filterStringSubscription.unsubscribe();
-  }  
-
-  startWebWorker(searchInput: string) {
-    if (typeof Worker !== 'undefined') {
-      if (!this._filterWebWorker) {
-        this._filterWebWorker = new Worker('../web-worker/filter-worker.worker', { type: 'module' });
-      }
-      this._filterWebWorker.onmessage = ({ data }) => {
-        this.books$ = of(data);
-      };
-      const data = {
-        books: this._books, 
-        searchString : searchInput
-      }
-      this._filterWebWorker.postMessage(data);
-    }
+    if (this._allBooksSubscription)
+      this._allBooksSubscription.unsubscribe();
   }
 }
