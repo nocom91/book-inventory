@@ -8,7 +8,12 @@ export function filterBookArray(data: any): Book[] {
         for (const value of books) {
             const temp_book = value;
             for (const property in value) {
-                if (property === 'id') continue;
+                if (property === 'id' ||
+                    property === 'firebaseId' ||
+                    property === 'FieldToShow' ||
+                    property === 'ValueToShow') {
+                        continue;
+                    }
                 if (value.hasOwnProperty(property)) {
                     const element = value[property];
                     if (!(element instanceof Array) && element.toString().toLowerCase().indexOf(lowSearchString) > -1) {
