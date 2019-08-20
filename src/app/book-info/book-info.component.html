@@ -1,34 +1,52 @@
 <mat-progress-spinner *ngIf="!isDataAvailable"></mat-progress-spinner>
-<button type="button" [routerLink]="['/']" mat-button>Back</button>
-<form [formGroup]="bookForm" *ngIf="isDataAvailable">
-    {{ selectedBook.Title }}
-    Authors:
-    
-      <ul>
-        <li *ngFor="let author of selectedBook.Authors">{{ author }}</li>
-      </ul>
-    
-    Publisher:
-    
-    <div> {{ selectedBook.Publisher }}</div>
 
-    <div> {{ selectedBook.Price }}</div>
-    <div *ngIf="!isEditingMode else editorBlock">
-      <div> {{ selectedBook.Availability }}</div>
-      <div> {{ selectedBook.Shipping }}</div>      
-    </div>
-    <ng-template #editorBlock>
-            <mat-form-field>
-              <input matInput name="availability" formControlName="availabilityInput" type="number"/>
-            </mat-form-field>
-            <mat-form-field>
-              <input matInput type="text" [matAutocomplete]="shippingAutoComplete" [formControl]="shippingInput"/>
-              <mat-autocomplete #shippingAutoComplete="matAutocomplete">
-                <mat-option *ngFor="let opt of filteredShippingList | async" [value]="opt">{{ opt }}</mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-    </ng-template>
-      <button mat-raised-button color="primary" (click)="isEditingMode = !isEditingMode">Edit</button>
-      <button mat-raised-button color="accent" type="submit" (click)="onSubmit()" 
-      [disabled]="!isEditingMode || !isSaveAvailable">Save</button>
-</form>
+<button mat-icon-button type="button" [routerLink]="['/']">
+  <mat-icon>keyboard_arrow_left</mat-icon>Back
+</button>
+
+<form [formGroup]="bookForm" *ngIf="isDataAvailable">
+  <mat-card> 
+    <mat-card-title>
+      {{ selectedBook.Title }}
+    </mat-card-title>
+    <mat-card-content>
+      <div class="book-container">
+        <div>
+          <span>Authors:</span>
+            <ul>
+              <li class="author" *ngFor="let author of selectedBook.Authors">{{ author }}</li>
+            </ul>
+        </div>
+        <div>
+          <span>Publisher:</span>
+          <span> {{ selectedBook.Publisher }}</span>
+        </div>
+
+        <div>
+            <span>Price:</span>
+          <span><mat-icon class="price">attach_money</mat-icon>{{ selectedBook.Price }}</span>
+        </div>
+        <div *ngIf="!isEditingMode else editorBlock" class="hidden-container">
+          <div> <span>Availability: </span> <span>{{ selectedBook.Availability | plural}}</span></div>
+          <div *ngIf="selectedBook.Shipping"><span>Shipping: </span> <span>{{ selectedBook.Shipping }}</span></div>
+        </div>
+        <ng-template #editorBlock>
+          <mat-form-field>
+            <input matInput name="availability" formControlName="availabilityInput" type="number" placeholder="Availability"/>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput type="text" [matAutocomplete]="shippingAutoComplete" [formControl]="shippingInput" placeholder="Shipping"/>
+            <mat-autocomplete #shippingAutoComplete="matAutocomplete">
+              <mat-option *ngFor="let opt of filteredShippingList | async" [value]="opt">{{ opt }}</mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </ng-template>
+      </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="isEditingMode = !isEditingMode">Edit</button>
+        <button mat-raised-button color="accent" type="submit" (click)="onSubmit()"
+        [disabled]="!isEditingMode || !isSaveAvailable">Save</button>
+      </mat-card-actions>
+  </mat-card>
+  </form>

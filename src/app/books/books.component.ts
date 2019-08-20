@@ -38,7 +38,7 @@ export class BooksComponent implements OnInit, OnDestroy {
         distinctUntilChanged()
       ).subscribe(data => {
         this.store.dispatch(fromBooksAction.setSearchString({
-          searchString: data.toLowerCase()
+          searchString: data
         }));
         this.store.select(fromBooks.getBooksForFiltering).subscribe(filteredBooks => this.books = filteredBooks);
       });

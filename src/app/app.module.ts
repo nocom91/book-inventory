@@ -18,7 +18,8 @@ import {
    MatTooltipModule,
    MatAutocompleteModule,
    MatProgressSpinnerModule,
-   MatSnackBarModule
+   MatSnackBarModule,
+   MatCardModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -28,6 +29,8 @@ import { AppComponent } from './app.component';
 import { FirebaseService } from './services/firebase.service';
 import { FirebaseResolver } from './services/firebase.resolver';
 
+import { PluralPipe } from './pipes/plural.pipe';
+
 import { BooksComponent } from './books/books.component';
 import { BookInfoComponent } from './book-info/book-info.component';
 
@@ -35,7 +38,8 @@ import { BookInfoComponent } from './book-info/book-info.component';
    declarations: [
       AppComponent,
       BooksComponent,
-      BookInfoComponent
+      BookInfoComponent,
+      PluralPipe
    ],
    imports: [
       BrowserModule,
@@ -54,6 +58,7 @@ import { BookInfoComponent } from './book-info/book-info.component';
       MatAutocompleteModule,
       MatProgressSpinnerModule,
       MatSnackBarModule,
+      MatCardModule,
       BrowserAnimationsModule
    ],
    providers: [

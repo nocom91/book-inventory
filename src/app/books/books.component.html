@@ -1,19 +1,26 @@
 <h3>Book Inventory</h3>
 <form>
-  <mat-form-field>
-    <input matInput placeholder="Search..." value="" name="searchInput" #searchInput [(ngModel)]="queryString" (keyup)="filter()">
+  <mat-form-field class="search-input-container">
+    <input matInput placeholder="Search..." value="" name="searchInput" #searchInput [(ngModel)]="queryString"
+      (keyup)="filter()">
   </mat-form-field>
 </form>
 <mat-list>
-  <mat-list-item *ngFor="let book of books">
-    <div mat-line><span>Title</span><span>{{ book.Title }}</span></div>
-    <div mat-line><span>Availability</span><span>{{ book.Availability }}</span></div>
+  <mat-list-item *ngFor="let book of books" [routerLink]="[ 'books/'+ book.id]" style="cursor: pointer">
+    <div mat-line><span class="title-list">{{ book.Title }}</span></div>
+    <div mat-line>
+      <div class="availability-list">
+        <span class="property-label-list">Availability</span>
+        <span class="property-value-list">{{ book.Availability | plural}}</span>
+      </div>
+    </div>
     <div mat-line *ngIf="book.ValueToShow && book.FieldToShow != 'Title' && book.FieldToShow != 'Availability'">
-        <span> {{ book.FieldToShow }}</span>
-      <span>{{ book.ValueToShow }}</span></div>
-    <button mat-icon-button [routerLink]="[ 'books/'+ book.id]"
-      aria-label="Details"
-      matTooltip="Details">
+      <div class="availability-list">
+        <span class="property-label-list"> {{ book.FieldToShow }}</span>
+        <span class="property-value-list">{{ book.ValueToShow }}</span>
+      </div>
+    </div>
+    <button mat-icon-button aria-label="Details" matTooltip="Details">
       <mat-icon>info</mat-icon>
     </button>
   </mat-list-item>

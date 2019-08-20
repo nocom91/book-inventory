@@ -18,8 +18,8 @@ export const selectBookEntities = createSelector(
 );
 
 export const selectAllBooks = createSelector(
-selectBookState,
-fromBook.selectAllBooks
+    selectBookState,
+    fromBook.selectAllBooks
 );
 
 export const selectedBook = createSelector(
@@ -32,25 +32,25 @@ export const selectedBook = createSelector(
 
 export const selectSearchString = createSelector(selectBookState, fromBook.selectSearchString);
 
-export const getBooksForFiltering = createSelector(selectAllBooks, selectSearchString, (books, searchString) =>
-{
+export const getBooksForFiltering = createSelector(selectAllBooks, selectSearchString, (books, searchString) => {
     const resultBooks: Book[] = [];
-    if (!searchString)
+    const lowSearchString = searchString.toLowerCase();
+    if (!lowSearchString)
         return resultBooks;
     books.forEach(value => {
         const temp_book = value;
         for (const property in value) {
             if (value.hasOwnProperty(property)) {
                 const element = value[property];
-                if (!(element instanceof Array) && element.toString().toLowerCase().indexOf(searchString) > -1) {
+                if (!(element instanceof Array) && element.toString().toLowerCase().indexOf(lowSearchString) > -1) {
                     temp_book.FieldToShow = property;
                     temp_book.ValueToShow = element;
                     resultBooks.push(temp_book);
                     break;
                 } else if (element instanceof Array) {
-                    if (element.some(author => author.toLowerCase().indexOf(searchString) > -1)) {
+                    if (element.some(author => author.toLowerCase().indexOf(lowSearchString) > -1)) {
                         temp_book.FieldToShow = property;
-                        temp_book.ValueToShow = element;
+                        temp_book.ValueToShow = element.join(', ');
                         resultBooks.push(temp_book);
                         break;
                     }
@@ -59,20 +59,13 @@ export const getBooksForFiltering = createSelector(selectAllBooks, selectSearchS
         }
     });
     return resultBooks;
-}
-    // books.filter((value) => value.Title.toLowerCase().indexOf(searchString) > -1 ||
-    //                         value.Publisher.toLowerCase().indexOf(searchString) > -1 || 
-    //                         value.Price.toString().indexOf(searchString) > -1 ||
-    //                         value.Availability.toString().indexOf(searchString) > -1 ||
-    //                         value.Authors.some(author => author.toLowerCase().indexOf(searchString) > -1)
-    //                         )
-);
+});
 
 export const getShippingOptions = createSelector(selectAllBooks, (books) => {
     return books.map(book => book.Shipping).filter(onlyUnique);
 });
 
 
-function onlyUnique(value, index, self){
+function onlyUnique(value, index, self) {
     return value && self.indexOf(value) === index;
 }
