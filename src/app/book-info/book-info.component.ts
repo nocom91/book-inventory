@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, tap } from 'rxjs/operators';
 
 import { Store } from '@ngrx/store';
 
@@ -25,8 +25,6 @@ export class BookInfoComponent implements OnInit, OnDestroy {
 
   public selectedBook: Book;
   public isEditingMode: boolean;
-  public isDataAvailable: boolean;
-  public isSaveAvailable: boolean;
   public shippingList: string[];
   public filteredShippingList: Observable<string[]>;
 
@@ -45,8 +43,6 @@ export class BookInfoComponent implements OnInit, OnDestroy {
   ) {
     this.selectedBook = new Book();
     this.isEditingMode = false;
-    this.isSaveAvailable = false;
-    this.isDataAvailable = false;
     this.bookForm = new FormGroup({
       availabilityInput: new FormControl(0)
     });
@@ -59,13 +55,12 @@ export class BookInfoComponent implements OnInit, OnDestroy {
       this.bookId = +params['id'];
       this.store.dispatch(fromBooksAction.selectBook({ bookId: this.bookId }));
       this.store.select(fromBooks.selectedBook)
-        .subscribe(book => {
+      .subscribe(book => {
           if (book) {
             this.selectedBook = book;
-            this.isDataAvailable = true;
             this.bookForm.setValue({
-              availabilityInput: this.selectedBook.Availability,
-              shippingInput: this.selectedBook.Shipping
+              availabilityInput: book.Availability,
+              shippingInput: book.Shipping
             });
           }
         });
@@ -75,36 +70,29 @@ export class BookInfoComponent implements OnInit, OnDestroy {
       startWith(''),
       map(opt => opt ? this._filterShippingOptions(opt) : this.shippingList.slice())
     );
-    this.bookForm.valueChanges.subscribe(change => {
-      const { availabilityInput, shippingInput } = change;
-      if (availabilityInput !== this.selectedBook.Availability ||
-        shippingInput !== this.selectedBook.Shipping) {
-        this.isSaveAvailable = true;
-      }
-    });
   }
 
   onSubmit() {
-    const { availabilityInput, shippingInput } = this.bookForm.value;
-    const data: IBookBase = {
-      firebaseId: this.selectedBook.firebaseId,
-      Availability: availabilityInput,
-      Shipping: shippingInput
-    };
-    this.firebaseService.saveChanges(data).subscribe(response => {
-      if (response) {
-        this.store.dispatch(fromBooksAction.updateBook({
-          book: {
-            id: this.selectedBook.id,
-            changes: {
-              Availability: availabilityInput,
-              Shipping: shippingInput
+      const { availabilityInput, shippingInput } = this.bookForm.value;
+      const data: IBookBase = {
+        firebaseId: this.selectedBook.firebaseId,
+        Availability: availabilityInput,
+        Shipping: shippingInput
+      };
+      this.firebaseService.saveChanges(data).subscribe(response => {
+        if (response) {
+          this.store.dispatch(fromBooksAction.updateBook({
+            book: {
+              id: this.selectedBook.id,
+              changes: {
+                Availability: availabilityInput,
+                Shipping: shippingInput
+              }
             }
-          }
-        }));
-        this._showNotification();
-      }
-    });
+          }));
+          this._showNotification();
+        }
+      });
   }
   private _filterShippingOptions(filterString: string) {
     const filterValue = filterString.toLowerCase();

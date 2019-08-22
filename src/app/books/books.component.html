@@ -4,7 +4,8 @@
     <input matInput placeholder="Search..." name="searchInput" [formControl]="searchStringControl">
   </mat-form-field>
 </form>
-<cdk-virtual-scroll-viewport itemSize="20" class="viewport">
+
+<cdk-virtual-scroll-viewport itemSize="20" class="viewport" *ngIf="books$ | async; else loading">
   <div *cdkVirtualFor="let book of books$ | async" [routerLink]="[ 'books/'+ book.id]" style="cursor: pointer" class="item">
     <div class="item-info">
       <div><span class="title-list">{{ book.Title }}</span></div>
@@ -26,3 +27,7 @@
     </button>
   </div>
 </cdk-virtual-scroll-viewport>
+
+<ng-template #loading>
+  <mat-spinner></mat-spinner>
+</ng-template>

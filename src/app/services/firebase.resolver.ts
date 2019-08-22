@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { IBook, Book } from '../models/book.model';
-import {map} from 'rxjs/operators';
 import { FirebaseService } from './firebase.service';
 import { Store } from '@ngrx/store';
 import * as fromBooksAction from '../store/books.actions';
